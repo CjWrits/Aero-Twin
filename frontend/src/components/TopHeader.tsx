@@ -1,5 +1,5 @@
 import React from 'react';
-import { RotateCcw, PlayCircle, ShieldCheck, Radio } from 'lucide-react';
+import { RotateCcw, PlayCircle, ShieldCheck, Radio, Menu } from 'lucide-react';
 import { SystemStatus } from '../types';
 
 interface TopHeaderProps {
@@ -7,24 +7,37 @@ interface TopHeaderProps {
   onOpenDemo: () => void;
   onResetEngine: () => void;
   syncPct: number;
+  onToggleSidebar?: () => void;
 }
 
 export const TopHeader: React.FC<TopHeaderProps> = ({
   systemStatus,
   onOpenDemo,
   onResetEngine,
-  syncPct
+  syncPct,
+  onToggleSidebar
 }) => {
   return (
     <header className="top-header">
       <div className="top-header-left">
-        <div>
+        {onToggleSidebar && (
+          <button
+            type="button"
+            className="mobile-menu-btn"
+            onClick={onToggleSidebar}
+            aria-label="Toggle navigation menu"
+          >
+            <Menu size={18} />
+          </button>
+        )}
+
+        <div className="top-header-brand">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontWeight: 700, fontSize: '15px', color: '#0f172a', letterSpacing: '0.04em' }}>
               AEROTWIN
             </span>
-            <span style={{ color: '#94a3b8' }}>|</span>
-            <span style={{ fontSize: '12px', color: '#475569', fontWeight: 500 }}>
+            <span className="hide-on-mobile" style={{ color: '#94a3b8' }}>|</span>
+            <span className="top-header-sub hide-on-mobile" style={{ fontSize: '12px', color: '#475569', fontWeight: 500 }}>
               Digital Twin & Propulsion Health Monitoring
             </span>
           </div>
@@ -33,39 +46,39 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
         <div className="top-header-badges">
           <span className="badge badge-online">
             <span className="led-indicator led-green"></span>
-            {systemStatus?.system_status || 'SYSTEM ONLINE'}
+            <span>{systemStatus?.system_status || 'ONLINE'}</span>
           </span>
 
-          <span className="badge badge-sim">
+          <span className="badge badge-sim hide-on-small-mobile">
             <Radio size={11} />
-            {systemStatus?.data_source || 'SIMULATION / TEST DATA'}
+            <span>{systemStatus?.data_source || 'SIMULATION'}</span>
           </span>
 
-          <span className="badge badge-engine">
-            ENGINE: <strong>{systemStatus?.engine_id || 'ENG-01'}</strong>
+          <span className="badge badge-engine hide-on-mobile">
+            ENG: <strong>{systemStatus?.engine_id || 'ENG-01'}</strong>
           </span>
 
-          <span className="badge badge-mission">
-            MISSION: <strong>{systemStatus?.mission_id || 'MISSION-042'}</strong>
+          <span className="badge badge-mission hide-on-mobile">
+            MSN: <strong>{systemStatus?.mission_id || 'MSN-042'}</strong>
           </span>
         </div>
       </div>
 
       <div className="top-header-right">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginRight: '8px', fontSize: '11px', color: '#475569' }}>
+        <div className="top-header-sync" style={{ display: 'flex', alignItems: 'center', gap: '5px', marginRight: '4px', fontSize: '11px', color: '#475569' }}>
           <ShieldCheck size={14} color="#2563eb" />
-          <span>Twin Sync:</span>
+          <span className="hide-on-small-mobile">Sync:</span>
           <strong style={{ fontFamily: 'var(--font-mono)', color: '#0f172a' }}>{syncPct.toFixed(1)}%</strong>
         </div>
 
-        <button className="btn-eng btn-eng-primary" onClick={onOpenDemo}>
+        <button className="btn-eng btn-eng-primary" onClick={onOpenDemo} title="Guided Demonstration Mode">
           <PlayCircle size={13} />
-          <span>DEMO MODE</span>
+          <span>DEMO</span>
         </button>
 
         <button className="btn-eng" onClick={onResetEngine} title="Reset engine to nominal endurance cruise">
           <RotateCcw size={13} />
-          <span>RESET ENG</span>
+          <span className="hide-on-small-mobile">RESET ENG</span>
         </button>
       </div>
     </header>

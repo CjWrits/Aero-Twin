@@ -115,7 +115,7 @@ export const FaultInjectionBar: React.FC<FaultInjectionBarProps> = ({
       </div>
 
       {/* Real-time Cause-Effect Cascade Breadcrumbs */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10.5px' }}>
+      <div className="fault-console-cascade" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10.5px' }}>
         <span style={{ color: '#94a3b8' }}>Cascade:</span>
         <span style={{ color: isFaultActive ? '#f87171' : '#4ade80', fontWeight: 600 }}>
           {isFaultActive ? `1. ${currentFault.type}` : '1. Nominal Dynamics'}

@@ -9,7 +9,8 @@ import {
   RotateCcw,
   AlertTriangle,
   Database,
-  Network
+  Network,
+  X
 } from 'lucide-react';
 import { SystemStatus } from '../types';
 
@@ -17,6 +18,8 @@ interface SidebarProps {
   activePage: string;
   onSelectPage: (pageId: string) => void;
   systemStatus: SystemStatus | null;
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
 const navItems = [
@@ -32,13 +35,31 @@ const navItems = [
   { id: 'system-arch', label: '10. System Architecture', icon: Network }
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ activePage, onSelectPage, systemStatus }) => {
+export const Sidebar: React.FC<SidebarProps> = ({
+  activePage,
+  onSelectPage,
+  systemStatus,
+  isMobileOpen = false,
+  onCloseMobile
+}) => {
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
       <div className="sidebar-header">
-        <div className="sidebar-title">
-          <Cpu size={18} color="#60a5fa" />
-          <span>AEROTWIN</span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div className="sidebar-title">
+            <Cpu size={18} color="#60a5fa" />
+            <span>AEROTWIN</span>
+          </div>
+          {onCloseMobile && (
+            <button
+              type="button"
+              className="sidebar-close-btn"
+              onClick={onCloseMobile}
+              aria-label="Close navigation sidebar"
+            >
+              <X size={18} />
+            </button>
+          )}
         </div>
         <div className="sidebar-subtitle">
           Propulsion Digital Twin · MALE UAV

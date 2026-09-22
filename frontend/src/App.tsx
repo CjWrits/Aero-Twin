@@ -30,6 +30,7 @@ export const App: React.FC = () => {
   const [telemetry, setTelemetry] = useState<LiveTelemetryResponse | null>(null);
   const [demoSteps, setDemoSteps] = useState<DemoStep[]>([]);
   const [isDemoOpen, setIsDemoOpen] = useState<boolean>(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
 
   // Rolling telemetry history map for sparklines and charts
   const [historyMap, setHistoryMap] = useState<Record<string, number[]>>({
@@ -116,11 +117,25 @@ export const App: React.FC = () => {
 
   return (
     <div className="app-container">
+      {/* Mobile Drawer Backdrop */}
+      {isMobileSidebarOpen && (
+        <div
+          className="sidebar-backdrop"
+          onClick={() => setIsMobileSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Left Navigation Sidebar */}
       <Sidebar
         activePage={activePage}
-        onSelectPage={setActivePage}
+        onSelectPage={(pageId) => {
+          setActivePage(pageId);
+          setIsMobileSidebarOpen(false);
+        }}
         systemStatus={systemStatus}
+        isMobileOpen={isMobileSidebarOpen}
+        onCloseMobile={() => setIsMobileSidebarOpen(false)}
       />
 
       <div className="main-wrapper">
@@ -130,6 +145,7 @@ export const App: React.FC = () => {
           onOpenDemo={() => setIsDemoOpen(true)}
           onResetEngine={handleResetEngine}
           syncPct={telemetry?.twin_synchronization_pct ?? 98.7}
+          onToggleSidebar={() => setIsMobileSidebarOpen((prev) => !prev)}
         />
 
         {/* Persistent Fault Injection Bar (Section 10) */}

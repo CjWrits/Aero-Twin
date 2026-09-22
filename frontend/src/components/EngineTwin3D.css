@@ -589,9 +589,90 @@
 
 @media (max-width: 980px) {
   .twin-stage {
-    height: 480px;
+    height: 460px;
   }
   .twin-hud {
     display: none;
   }
 }
+
+@media (max-width: 768px) {
+  .twin-stage {
+    height: 380px;
+    min-height: 320px;
+  }
+
+  .twin-toolbar {
+    bottom: 6px;
+    left: 6px;
+    right: 6px;
+    padding: 5px 8px;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+  .twin-toolbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tt-group {
+    flex-shrink: 0;
+  }
+
+  .tt-group button {
+    padding: 4px 7px;
+    font-size: 10px;
+  }
+
+  .tt-slow {
+    flex-shrink: 0;
+    font-size: 10px;
+  }
+  .tt-slow input[type="range"] {
+    width: 60px;
+  }
+
+  .twin-detail {
+    top: auto;
+    bottom: 52px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-width: none;
+    transform: none;
+  }
+
+  .twin-rail {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 6px;
+  }
+
+  .twin-row {
+    padding: 6px 8px;
+    font-size: 10.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .twin-stage {
+    height: 320px;
+    min-height: 280px;
+  }
+
+  .twin-rail {
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+  }
+
+  .twin-row {
+    padding: 5px 6px;
+    font-size: 10px;
+  }
+
+  .tr-name {
+    font-size: 9.5px;
+  }
+}
+
