@@ -148,7 +148,7 @@ export const App: React.FC = () => {
           <LiveEnginePage telemetry={telemetry} historyMap={historyMap} />
         )}
         {activePage === 'digital-twin' && (
-          <DigitalTwinPage telemetry={telemetry} />
+          <DigitalTwinPage telemetry={telemetry} historyMap={historyMap} />
         )}
         {activePage === 'health-diagnostics' && (
           <HealthDiagnosticsPage telemetry={telemetry} />

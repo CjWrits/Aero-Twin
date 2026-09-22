@@ -1,19 +1,25 @@
 import React, { useState } from 'react';
-import { SubsystemHealth } from '../types';
-import { Gauge, Zap, Wind, Droplets, Activity, Disc, Cpu, Eye, AlertTriangle, CheckCircle, Info } from 'lucide-react';
+import { SubsystemHealth, LiveTelemetryResponse } from '../types';
+import { Gauge, Zap, Wind, Droplets, Activity, Cpu, Eye, CheckCircle, Info, Box, Layers } from 'lucide-react';
+import { EngineTwin3D } from './EngineTwin3D';
 
 interface EngineSchematicProps {
   subsystems: Record<string, SubsystemHealth>;
   onSelectSubsystem?: (subsystemKey: string) => void;
   selectedSubsystemKey?: string;
+  telemetry?: LiveTelemetryResponse | null;
+  historyMap?: Record<string, number[]>;
 }
 
 export const EngineSchematic: React.FC<EngineSchematicProps> = ({
   subsystems,
   onSelectSubsystem,
-  selectedSubsystemKey = 'combustion'
+  selectedSubsystemKey = 'combustion',
+  telemetry,
+  historyMap
 }) => {
   const [activeKey, setActiveKey] = useState<string>(selectedSubsystemKey);
+  const [simulationMode, setSimulationMode] = useState<'3d' | '2d'>('3d');
   const [viewMode, setViewMode] = useState<'cutaway' | 'sensors' | 'flow'>('cutaway');
 
   const handleSelect = (key: string) => {
@@ -73,60 +79,110 @@ export const EngineSchematic: React.FC<EngineSchematicProps> = ({
           </span>
         </div>
 
-        {/* View Mode Switcher */}
-        <div style={{ display: 'flex', gap: '4px', background: '#e2e8f0', padding: '2px', borderRadius: '4px' }}>
+        {/* Simulation Engine Mode Switcher: 3D Realistic vs 2D CAD */}
+        <div style={{ display: 'flex', gap: '4px', background: '#0f172a', padding: '3px', borderRadius: '5px' }}>
           <button
-            onClick={() => setViewMode('cutaway')}
+            type="button"
+            onClick={() => setSimulationMode('3d')}
             style={{
-              padding: '4px 10px',
-              fontSize: '10.5px',
-              fontWeight: viewMode === 'cutaway' ? 700 : 500,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 11px',
+              fontSize: '11px',
+              fontWeight: simulationMode === '3d' ? 700 : 500,
               border: 'none',
               borderRadius: '3px',
               cursor: 'pointer',
-              background: viewMode === 'cutaway' ? '#ffffff' : 'transparent',
-              color: viewMode === 'cutaway' ? '#1e293b' : '#64748b',
-              boxShadow: viewMode === 'cutaway' ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
+              background: simulationMode === '3d' ? '#2563eb' : 'transparent',
+              color: simulationMode === '3d' ? '#ffffff' : '#94a3b8',
+              boxShadow: simulationMode === '3d' ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
               transition: 'all 0.15s ease'
             }}
           >
-            Mechanical Cutaway
+            <Box size={13} />
+            <span>3D Realistic Digital Twin</span>
           </button>
           <button
-            onClick={() => setViewMode('sensors')}
+            type="button"
+            onClick={() => setSimulationMode('2d')}
             style={{
-              padding: '4px 10px',
-              fontSize: '10.5px',
-              fontWeight: viewMode === 'sensors' ? 700 : 500,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '4px 11px',
+              fontSize: '11px',
+              fontWeight: simulationMode === '2d' ? 700 : 500,
               border: 'none',
               borderRadius: '3px',
               cursor: 'pointer',
-              background: viewMode === 'sensors' ? '#ffffff' : 'transparent',
-              color: viewMode === 'sensors' ? '#1e293b' : '#64748b',
-              boxShadow: viewMode === 'sensors' ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
+              background: simulationMode === '2d' ? '#2563eb' : 'transparent',
+              color: simulationMode === '2d' ? '#ffffff' : '#94a3b8',
+              boxShadow: simulationMode === '2d' ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
               transition: 'all 0.15s ease'
             }}
           >
-            Telemetry Sensors
-          </button>
-          <button
-            onClick={() => setViewMode('flow')}
-            style={{
-              padding: '4px 10px',
-              fontSize: '10.5px',
-              fontWeight: viewMode === 'flow' ? 700 : 500,
-              border: 'none',
-              borderRadius: '3px',
-              cursor: 'pointer',
-              background: viewMode === 'flow' ? '#ffffff' : 'transparent',
-              color: viewMode === 'flow' ? '#1e293b' : '#64748b',
-              boxShadow: viewMode === 'flow' ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            Gas / Fluid Flow
+            <Layers size={13} />
+            <span>2D CAD Cutaway</span>
           </button>
         </div>
+
+        {/* 2D View Mode Switcher (Visible in 2D CAD mode) */}
+        {simulationMode === '2d' && (
+          <div style={{ display: 'flex', gap: '4px', background: '#e2e8f0', padding: '2px', borderRadius: '4px' }}>
+            <button
+              onClick={() => setViewMode('cutaway')}
+              style={{
+                padding: '4px 10px',
+                fontSize: '10.5px',
+                fontWeight: viewMode === 'cutaway' ? 700 : 500,
+                border: 'none',
+                borderRadius: '3px',
+                cursor: 'pointer',
+                background: viewMode === 'cutaway' ? '#ffffff' : 'transparent',
+                color: viewMode === 'cutaway' ? '#1e293b' : '#64748b',
+                boxShadow: viewMode === 'cutaway' ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              Mechanical Cutaway
+            </button>
+            <button
+              onClick={() => setViewMode('sensors')}
+              style={{
+                padding: '4px 10px',
+                fontSize: '10.5px',
+                fontWeight: viewMode === 'sensors' ? 700 : 500,
+                border: 'none',
+                borderRadius: '3px',
+                cursor: 'pointer',
+                background: viewMode === 'sensors' ? '#ffffff' : 'transparent',
+                color: viewMode === 'sensors' ? '#1e293b' : '#64748b',
+                boxShadow: viewMode === 'sensors' ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              Telemetry Sensors
+            </button>
+            <button
+              onClick={() => setViewMode('flow')}
+              style={{
+                padding: '4px 10px',
+                fontSize: '10.5px',
+                fontWeight: viewMode === 'flow' ? 700 : 500,
+                border: 'none',
+                borderRadius: '3px',
+                cursor: 'pointer',
+                background: viewMode === 'flow' ? '#ffffff' : 'transparent',
+                color: viewMode === 'flow' ? '#1e293b' : '#64748b',
+                boxShadow: viewMode === 'flow' ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              Gas / Fluid Flow
+            </button>
+          </div>
+        )}
 
         {/* Subsystem Direct Select Pills */}
         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
@@ -173,8 +229,17 @@ export const EngineSchematic: React.FC<EngineSchematicProps> = ({
         </div>
       </div>
 
-      {/* Main CAD Schematic + Inspector Card Layout */}
-      <div style={{ display: 'flex', gap: '14px', alignItems: 'stretch', flexWrap: 'wrap' }}>
+      {/* Simulation View: 3D Realistic Digital Twin vs 2D CAD Cutaway */}
+      {simulationMode === '3d' ? (
+        <EngineTwin3D
+          telemetry={telemetry}
+          historyMap={historyMap}
+          selectedSubsystemKey={activeKey}
+          onSelectSubsystem={handleSelect}
+          height={540}
+        />
+      ) : (
+        <div style={{ display: 'flex', gap: '14px', alignItems: 'stretch', flexWrap: 'wrap' }}>
         {/* Left: Realistic Vector Cutaway Drawing */}
         <div style={{
           flex: '1 1 58%',
@@ -1449,6 +1514,8 @@ export const EngineSchematic: React.FC<EngineSchematicProps> = ({
             </div>
           </div>
 
+
+ 
           {/* Bottom Evaluation Note */}
           <div style={{
             background: '#f8fafc',
@@ -1468,6 +1535,7 @@ export const EngineSchematic: React.FC<EngineSchematicProps> = ({
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 };

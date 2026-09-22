@@ -5,9 +5,10 @@ import { EngineSchematic } from '../components/EngineSchematic';
 
 interface DigitalTwinPageProps {
   telemetry: LiveTelemetryResponse | null;
+  historyMap?: Record<string, number[]>;
 }
 
-export const DigitalTwinPage: React.FC<DigitalTwinPageProps> = ({ telemetry }) => {
+export const DigitalTwinPage: React.FC<DigitalTwinPageProps> = ({ telemetry, historyMap }) => {
   const [selectedSubsystem, setSelectedSubsystem] = useState<string>('combustion');
 
   if (!telemetry) {
@@ -97,6 +98,8 @@ export const DigitalTwinPage: React.FC<DigitalTwinPageProps> = ({ telemetry }) =
             subsystems={telemetry.subsystems}
             selectedSubsystemKey={selectedSubsystem}
             onSelectSubsystem={setSelectedSubsystem}
+            telemetry={telemetry}
+            historyMap={historyMap}
           />
         </div>
       </div>

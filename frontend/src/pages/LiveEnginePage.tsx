@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Activity, ArrowUpRight, ArrowDownRight, Minus, Sliders } from 'lucide-react';
+import { Activity, ArrowUpRight, ArrowDownRight, Minus, Sliders, Box, Eye, EyeOff } from 'lucide-react';
 import { LiveTelemetryResponse } from '../types';
 import { Sparkline } from '../components/Sparkline';
+import { EngineTwin3D } from '../components/EngineTwin3D';
 
 interface LiveEnginePageProps {
   telemetry: LiveTelemetryResponse | null;
@@ -10,6 +11,7 @@ interface LiveEnginePageProps {
 
 export const LiveEnginePage: React.FC<LiveEnginePageProps> = ({ telemetry, historyMap }) => {
   const [timeRange, setTimeRange] = useState<'5 min' | '15 min' | '30 min' | '1 hr'>('15 min');
+  const [show3DTwin, setShow3DTwin] = useState<boolean>(true);
 
   if (!telemetry) {
     return <div style={{ padding: '24px', textAlign: 'center', color: '#64748b' }}>Awaiting telemetry feed...</div>;
@@ -125,6 +127,50 @@ export const LiveEnginePage: React.FC<LiveEnginePageProps> = ({ telemetry, histo
 
   return (
     <div className="page-content">
+      {/* 3D Realistic Digital Twin Live Kinematic Simulation */}
+      <div className="panel">
+        <div className="panel-header">
+          <div className="panel-title">
+            <Box size={15} color="#2563eb" />
+            <span>REAL-TIME 3D PROPULSION DIGITAL TWIN & KINEMATICS</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '11px', color: '#64748b' }}>
+              Physics kinematic replica · Real-time shaft RPM & thermal simulation
+            </span>
+            <button
+              type="button"
+              onClick={() => setShow3DTwin(!show3DTwin)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '2px 8px',
+                fontSize: '10.5px',
+                borderRadius: '3px',
+                border: '1px solid #cbd5e1',
+                background: '#ffffff',
+                color: '#475569',
+                cursor: 'pointer'
+              }}
+            >
+              {show3DTwin ? <EyeOff size={12} /> : <Eye size={12} />}
+              <span>{show3DTwin ? 'Minimize 3D Twin' : 'Expand 3D Twin'}</span>
+            </button>
+          </div>
+        </div>
+
+        {show3DTwin && (
+          <div className="panel-body">
+            <EngineTwin3D
+              telemetry={telemetry}
+              historyMap={historyMap}
+              height={460}
+            />
+          </div>
+        )}
+      </div>
+
       {/* Parameters Header */}
       <div className="panel">
         <div className="panel-header">

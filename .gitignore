@@ -59,3 +59,10 @@ lerna-debug.log*
 *.sw?
 .DS_Store
 Thumbs.db
+
+# Standalone Fullscreen Simulation (temporary for video recording)
+standalone-simulation/
+simulation-fullscreen/
+fullscreen-sim.html
+launch-simulation.bat
+
